@@ -13,9 +13,14 @@
     <div id="result"></div>
 
     <script>
+        // Votre code JavaScript ici
         document.getElementById('submitBtn').onclick = async function() {
             const url = document.getElementById('youtubeUrl').value;
+            console.log('URL saisie:', url); // Vérifiez l'URL saisie
+
             const videoId = url.split('v=')[1].split('&')[0]; // Extraction de l'ID
+            console.log('ID de la vidéo:', videoId); // Vérifiez l'ID extrait
+
             const response = await fetch(`https://yt-api.p.rapidapi.com/subtitles?id=${videoId}`, {
                 method: 'GET',
                 headers: {
@@ -23,7 +28,17 @@
                     'X-Rapidapi-Host': 'yt-api.p.rapidapi.com'
                 }
             });
+
+            console.log('Réponse de l\'API:', response); // Vérifiez la réponse de l'API
+
+            if (!response.ok) {
+                console.error('Erreur lors de la récupération des sous-titres:', response.status);
+                return;
+            }
+
             const data = await response.json();
+            console.log('Données des sous-titres:', data); // Vérifiez les données récupérées
+
             const cleanedSubtitles = cleanSubtitles(data.subtitles);
             const explanation = await explainWithClaude(cleanedSubtitles);
             document.getElementById('result').innerText = explanation;
